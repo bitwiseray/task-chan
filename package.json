@@ -12,6 +12,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "discord.js": "^14.22.1",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "quick.db": "^9.1.7"
   }
 }
