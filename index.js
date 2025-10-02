@@ -3,6 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
 require('dotenv').config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent] });
+const Shift = require('./utility/shift-handle');
 
 client.commands = new Collection();
 
@@ -36,6 +37,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 
 	try {
+		console.log(Shift.listAll());
 		await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
