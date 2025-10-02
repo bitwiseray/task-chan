@@ -37,23 +37,20 @@ module.exports = {
             .setColor('Blue')
             .setAuthor({ name: target.displayName, iconURL: target.avatarURL() })
             .setTitle(`${shiftTitle} Shift!`)
-            .setDescription(`👤 Assigned to: ${target} 
-                ⏱️ Deadline: Before **${deadline}**
-                📑 Detail: ${detail}`)
+            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: Before **${deadline}**\n📑 Detail: ${detail}`)
             .setTimestamp()
 
-        const acceptButton = new ButtonBuilder()
-            .setCustomId('accept')
-            .setLabel('Accept')
-            .setStyle(ButtonStyle.Success);
-
-        const declineButton = new ButtonBuilder()
-            .setCustomId('decline')
-            .setLabel('Decline')
-            .setStyle(ButtonStyle.Danger);
-
-        const row = new ActionRowBuilder()
-			.addComponents(acceptButton, declineButton);
+            const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId("accept_shift")
+                    .setLabel("Accept")
+                    .setStyle(ButtonStyle.Success),
+                new ButtonBuilder()
+                    .setCustomId("decline_shift")
+                    .setLabel("Decline")
+                    .setStyle(ButtonStyle.Danger)
+            );
 
         interaction.channel.send({ content: `New shift notice for ${target}!`, embeds: [embed], components: [row] });
         interaction.reply({ content: 'Sent!', flags: MessageFlags.Ephemeral });
