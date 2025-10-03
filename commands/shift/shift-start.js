@@ -32,10 +32,10 @@ module.exports = {
     async execute(interaction) {
         const broadcastChannel = interaction.guild.channels.cache.get(shiftBroadcastChannel);
         if (!interaction.member.roles.cache.has(shiftAdminRole) && interaction.user.id !== devUser) {
-            return interaction.reply({ content: 'You do not have permission to use this command!', flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: '⚠️ You do not have permission to use this command!', flags: MessageFlags.Ephemeral });
         }
         if (!broadcastChannel) {
-            return interaction.reply({ content: 'Shift broadcast channel not found!', flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: '❌ Shift broadcast channel not found!', flags: MessageFlags.Ephemeral });
         }
 
         const target = interaction.options.getUser('target');
@@ -45,7 +45,7 @@ module.exports = {
         const shiftTitle = interaction.options.getString('title');
         const deadline = moment(deadlineInput, 'DD/MM/YYYY HH:mm');
         if (!deadline.isValid()) {
-            return interaction.reply({ content: 'Invalid deadline format! Please enter date in **DD/MM/YYY HH:mm** format.', flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: '❌ Invalid deadline format! Please enter date in **DD/MM/YYY HH:mm** format.', flags: MessageFlags.Ephemeral });
         }
         const key = nanoid(10);
         const shiftObject = {
@@ -79,6 +79,6 @@ module.exports = {
 
         await interaction.channel.send({ content: `New shift notice for ${target}!`, embeds: [embed], components: [row] });
         await Shift.start(key, shiftObject);
-        interaction.reply({ content: 'Shift broadcast sent!', flags: MessageFlags.Ephemeral });
+        interaction.reply({ content: '✅ Shift broadcast sent!', flags: MessageFlags.Ephemeral });
     },
 };
