@@ -17,7 +17,7 @@ module.exports = {
             .setColor('White')
             .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
             .setTitle('Active Shifts')
-            .setDescription(formattedList.join("\n"))
+            .setDescription(formattedList.join("\n") || 'No active shifts')
             .setTimestamp()
 
         await interaction.reply({ embeds: [embed] });
