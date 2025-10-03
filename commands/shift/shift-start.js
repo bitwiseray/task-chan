@@ -78,7 +78,7 @@ module.exports = {
             );
 
         await interaction.channel.send({ content: `New shift notice for ${target}!`, embeds: [embed], components: [row] });
-        await Shift.start(key, shiftObject);
+        await Shift.post(key, shiftObject);
         interaction.reply({ content: '✅ Shift broadcast sent!', flags: MessageFlags.Ephemeral });
     },
 };
