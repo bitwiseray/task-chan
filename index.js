@@ -64,7 +64,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				await interaction.reply({ content: `Shift **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
 			}
 			else if (action === "declineShift") {
-				Shift.rejected(id, interaction.user);
+				Shift.reject(id, interaction.user);
 				const embed = new EmbedBuilder()
 							.setColor('Red')
 							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })

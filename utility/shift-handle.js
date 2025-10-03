@@ -97,7 +97,7 @@ class Shift {
    * @param {String} key 
    * @param {Object} user 
    */
-  async rejected(key, user) {
+  async reject(key, user) {
     try {
       const shift = await this.db.get(key);
       if (!shift) return { success: false, cause: "Shift not found", data: null };
