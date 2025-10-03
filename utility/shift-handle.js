@@ -3,36 +3,75 @@ const ShiftDb = new QuickDB();
 
 class Shift {
   constructor() {
-    // Hii
+    this.db = ShiftDb; // in case you want multiple namespaces later
   }
 
-  async start(key, object) {
+  /**
+   * Start (create) a new shift
+   * @param {string} key - Unique key/id for the shift
+   * @param {object} data - Shift details
+   */
+  async start(key, data) {
     try {
-        const sfn = ShiftDb.set(key, object);
-        console.log('Shift set', sfn);
+      const shift = {
+        title: data.title ?? "Untitled Shift",
+        details: data.details ?? null,
+        assignedId: data.assignedId ?? null,
+        deadline: data.deadline ?? null,
+        status: data.status ?? "PENDING",
+        createdAt: Date.now(),
+        startedAt: null
+      };
+  
+      await this.db.set(key, shift);
+      return { success: true, cause: null };
     } catch (error) {
-        return { success: false, cause: error };
-    }
-    return { 'success': true, cause: null };
-  }
-
-  async end(key) {
-    try {
-      ShiftDb.delete(key);
-    } catch (error) {
-        return { success: false, cause: error };
-    }
-    return { 'success': true, cause: null }
-  }
-
-  listAll() {
-    try {
-        return ShiftDb.all()
-    } catch (error) {
-        return { success: false, cause: error, data: null };
+      return { success: false, cause: error, data: null };
     }
   }
 
+  /**
+   * Delete a shift
+   */
+  async delete(key) {
+    try {
+      await this.db.delete(key);
+      return { success: true, cause: null };
+    } catch (error) {
+      return { success: false, cause: error };
+    }
+  }
+
+  /**
+   * List all shifts
+   */
+  async listAll() {
+    try {
+      const list = await this.db.all();
+
+      // flatten Quick.db output
+      const clean = list.map(item => ({
+        id: item.id,
+        ...item.value
+      }));
+
+      return { success: true, cause: null, data: clean };
+    } catch (error) {
+      return { success: false, cause: error, data: [] };
+    }
+  }
+
+  /**
+   * Get one shift
+   */
+  async get(key) {
+    try {
+      const shift = await this.db.get(key);
+      return { success: true, cause: null, data: shift };
+    } catch (error) {
+      return { success: false, cause: error, data: null };
+    }
+  }
 }
 
 module.exports = new Shift();
