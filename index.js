@@ -29,23 +29,40 @@ for (const folder of commandFolders) {
 }
 
 client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
-	const command = interaction.client.commands.get(interaction.commandName);
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
-		return;
+	// Slash commands
+	if (interaction.isChatInputCommand()) {
+		const command = interaction.client.commands.get(interaction.commandName);
+		if (!command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			return;
+		}
+
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(error);
+			const reply = { content: 'There was an error while executing this command!', ephemeral: true };
+			if (interaction.replied || interaction.deferred) await interaction.followUp(reply);
+			else await interaction.reply(reply);
+		}
 	}
 
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+	else if (interaction.isButton()) {
+		try {
+			const [action, id] = interaction.customId.split(":");
+			// Example: "shiftStart:12345"
+			if (action === "shiftStart") {
+				await interaction.reply({ content: `Shift **${id}** started!`, ephemeral: true });
+			}
+			else if (action === "shiftDelete") {
+				await interaction.reply({ content: `Shift **${id}** deleted!`, ephemeral: true });
+			}
+		} catch (error) {
+			console.error(error);
+			await interaction.reply({ content: "Button error!", ephemeral: true });
 		}
 	}
 });
+
 
 client.login(process.env.token);
