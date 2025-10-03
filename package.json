@@ -5,7 +5,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "load": "node load-commands.js",
     "start": "node index.js"
   },
   "author": "Google LLC",
