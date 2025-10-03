@@ -1,9 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, MessageFlags } = require('discord.js');
 require('dotenv').config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent] });
 const Shift = require('./utility/shift-handle');
+const moment = require('moment');
 
 client.commands = new Collection();
 
@@ -50,16 +51,32 @@ client.on(Events.InteractionCreate, async interaction => {
 	else if (interaction.isButton()) {
 		try {
 			const [action, id] = interaction.customId.split(":");
-			// Example: "shiftStart:12345"
-			if (action === "shiftStart") {
-				await interaction.reply({ content: `Shift **${id}** started!`, ephemeral: true });
+			const shift = await Shift.get(id);
+			if (action === "acceptShift") {
+				Shift.start(id, interaction.member);
+				const embed = new EmbedBuilder()
+							.setColor('Green')
+							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
+							.setTitle(`${shift.title} Shift started!`)
+							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: Before **${moment(shift.deadline).format('MMMM Do YYYY, h:mm A')}**\n📑 Details: ${shift.details}`)
+							.setTimestamp()
+				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
+				await interaction.reply({ content: `Shift **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
 			}
-			else if (action === "shiftDelete") {
-				await interaction.reply({ content: `Shift **${id}** deleted!`, ephemeral: true });
+			else if (action === "declineShift") {
+				Shift.rejected(id, interaction.user);
+				const embed = new EmbedBuilder()
+							.setColor('Red')
+							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
+							.setTitle(`${shift.title} Shift rejected!`)
+							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: Before **${moment(shift.deadline).format('MMMM Do YYYY, h:mm A')}**\n📑 Details: ${shift.details}`)
+							.setTimestamp()
+				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
+				await interaction.reply({ content: `Shift **${id}** has been rejected and HR has been notifed!`, flags: MessageFlags.Ephemeral });
 			}
 		} catch (error) {
 			console.error(error);
-			await interaction.reply({ content: "Button error!", ephemeral: true });
+			await interaction.reply({ content: "Button error!", flags: MessageFlags.Ephemeral });
 		}
 	}
 });
