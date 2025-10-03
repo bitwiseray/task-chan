@@ -68,7 +68,7 @@ module.exports = {
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`acceptShift_${key}`)
+                    .setCustomId(`acceptShift:${key}`)
                     .setLabel("Accept")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
@@ -77,7 +77,7 @@ module.exports = {
                     .setStyle(ButtonStyle.Danger)
             );
 
-        await interaction.channel.send({ content: `New shift notice for ${target}!`, embeds: [embed], components: [row] });
+        await broadcastChannel.send({ content: `New shift notice for ${target}!`, embeds: [embed], components: [row] });
         await Shift.post(key, shiftObject);
         interaction.reply({ content: '✅ Shift broadcast sent!', flags: MessageFlags.Ephemeral });
     },
