@@ -3,7 +3,7 @@ const ShiftDb = new QuickDB();
 
 class Shift {
   constructor() {
-    this.db = ShiftDb; // in case you want multiple namespaces later
+    this.db = ShiftDb;
   }
 
   /**
@@ -48,14 +48,11 @@ class Shift {
   async listAll() {
     try {
       const list = await this.db.all();
-
-      // flatten Quick.db output
       const clean = list.map(item => ({
         id: item.id,
         ...item.value
       }));
-
-      return { success: true, cause: null, data: clean };
+      return clean;
     } catch (error) {
       return { success: false, cause: error, data: [] };
     }
@@ -67,7 +64,7 @@ class Shift {
   async get(key) {
     try {
       const shift = await this.db.get(key);
-      return { success: true, cause: null, data: shift };
+      return shift;
     } catch (error) {
       return { success: false, cause: error, data: null };
     }
