@@ -39,6 +39,7 @@ module.exports = {
         }
 
         const target = interaction.options.getUser('target');
+        const title = interaction.options.getString('title');
         const detail = interaction.options.getString('detail');
         const deadlineInput = interaction.options.getString('deadline');
         const shiftTitle = interaction.options.getString('title');
@@ -48,7 +49,8 @@ module.exports = {
         }
         const key = nanoid(10);
         const shiftObject = {
-            assinged: target,
+            title: title,
+            assignedId: target.id,
             details: detail,
             deadline: deadline.valueOf(),
             status: 'PENDING',
