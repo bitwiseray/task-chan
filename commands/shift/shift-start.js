@@ -20,7 +20,7 @@ module.exports = {
 				.setRequired(true))
 		.addStringOption(option =>
 			option
-				.setName('detail')
+				.setName('details')
 				.setDescription('short detail of the shift')
 				.setRequired(true))
         .addStringOption(option =>
@@ -60,7 +60,7 @@ module.exports = {
             .setColor('Blue')
             .setAuthor({ name: target.displayName, iconURL: target.avatarURL() })
             .setTitle(`${shiftTitle} Shift!`)
-            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: Before **${deadline.format('MMMM Do YYYY, h:mm A')}**\n📑 Details: ${detail}`)
+            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: <t:${deadline}:f>\n📑 Details: ${detail}`)
             .setTimestamp()
 
         const row = new ActionRowBuilder()
@@ -70,7 +70,7 @@ module.exports = {
                     .setLabel("Accept")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId(`declineShift_${key}`)
+                    .setCustomId(`declineShift:${key}`)
                     .setLabel("Decline")
                     .setStyle(ButtonStyle.Danger)
             );
