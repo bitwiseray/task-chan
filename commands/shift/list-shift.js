@@ -18,7 +18,7 @@ module.exports = {
       - Status: ${statusEmoji} ${task.status}
       - Assigned: ${interaction.guild.members.cache.get(task.assignedId) ?? "None"}  
       - Posted: <t:${Math.floor(task.createdAt / 1000)}:f>  
-      - Deadline: <t:${Math.floor(task.deadline / 1000)}:f>  
+      - Deadline: <t:${Math.floor(task.deadline / 1000)}:R>  
       - ID: ${task.id}`;
     });
 

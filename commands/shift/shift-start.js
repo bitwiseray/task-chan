@@ -60,7 +60,7 @@ module.exports = {
             .setColor('Blue')
             .setAuthor({ name: target.displayName, iconURL: target.avatarURL() })
             .setTitle(`${shiftTitle} Task!`)
-            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: <t:${Math.floor(deadline.valueOf() / 1000)}:f>\n📑 Details: ${detail}`)
+            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: <t:${Math.floor(deadline.valueOf() / 1000)}:R>\n📑 Details: ${detail}`)
             .setTimestamp()
 
         const row = new ActionRowBuilder()
