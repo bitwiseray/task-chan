@@ -57,8 +57,8 @@ client.on(Events.InteractionCreate, async interaction => {
 				const embed = new EmbedBuilder()
 							.setColor('Green')
 							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
-							.setTitle(`${shift.title} Shift started!`)
-							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
+							.setTitle(`${shift.title} task started!`)
+							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 							.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
 				await interaction.reply({ content: `Task **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
@@ -68,8 +68,8 @@ client.on(Events.InteractionCreate, async interaction => {
 				const embed = new EmbedBuilder()
 							.setColor('Red')
 							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
-							.setTitle(`${shift.title} Shift rejected!`)
-							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
+							.setTitle(`${shift.title} task rejected!`)
+							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 							.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
 				await interaction.reply({ content: `Task **${shift.title}}** has been rejected, the HR team will be notified, please log a reason for rejecting this task when asked.`, flags: MessageFlags.Ephemeral });
