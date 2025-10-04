@@ -72,7 +72,7 @@ client.on(Events.InteractionCreate, async interaction => {
 							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: Before **${moment(shift.deadline).format('MMMM Do YYYY, h:mm A')}**\n📑 Details: ${shift.details}`)
 							.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
-				await interaction.reply({ content: `Shift **${id}** has been rejected and HR has been notifed!`, flags: MessageFlags.Ephemeral });
+				await interaction.reply({ content: `Shift **${shift.title}}** has been rejected, please `, flags: MessageFlags.Ephemeral });
 			}
 		} catch (error) {
 			console.error(error);
