@@ -4,7 +4,7 @@ const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, MessageFlag
 require('dotenv').config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent] });
 const Shift = require('./utility/shift-handle');
-const moment = require('moment');
+const { shiftUpdatesChannel } = require('./config.json');
 
 client.commands = new Collection();
 
@@ -72,7 +72,12 @@ client.on(Events.InteractionCreate, async interaction => {
 							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 							.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
-				await interaction.reply({ content: `Task **${shift.title}}** has been rejected, the HR team will be notified, please log a reason for rejecting this task when asked.`, flags: MessageFlags.Ephemeral });
+				const updatesChannel = interaction.guild.channels.cache.get(shiftUpdatesChannel);
+				if (!updatesChannel) {
+					return interaction.channel.send('❌ Task broadcast channel not found!');
+				}
+				let alert = await updatesChannel.send({ content: `${interaction.user} has rejected task **${shift.title}**, please reply to this message to log reason.` });
+				await interaction.reply({ content: `Task **${shift.title}** has been rejected, please log a reason for rejecting this task at ${alert.url}`, flags: MessageFlags.Ephemeral });
 			}
 		} catch (error) {
 			console.error(error);
