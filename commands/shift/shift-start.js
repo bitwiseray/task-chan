@@ -33,7 +33,7 @@ module.exports = {
     async execute(interaction) {
         const broadcastChannel = interaction.guild.channels.cache.get(shiftBroadcastChannel);
         if (!broadcastChannel) {
-            return interaction.reply({ content: '❌ Shift broadcast channel not found!', flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: '❌ Task broadcast channel not found!', flags: MessageFlags.Ephemeral });
         }
 
         const target = interaction.options.getUser('target');
@@ -59,7 +59,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('Blue')
             .setAuthor({ name: target.displayName, iconURL: target.avatarURL() })
-            .setTitle(`${shiftTitle} Shift!`)
+            .setTitle(`${shiftTitle} Task!`)
             .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: <t:${Math.floor(deadline.valueOf() / 1000)}:f>\n📑 Details: ${detail}`)
             .setTimestamp()
 
@@ -75,8 +75,8 @@ module.exports = {
                     .setStyle(ButtonStyle.Danger)
             );
 
-        await broadcastChannel.send({ content: `New shift notice for ${target}!`, embeds: [embed], components: [row] });
+        await broadcastChannel.send({ content: `New task notice for ${target}!`, embeds: [embed], components: [row] });
         await Shift.post(key, shiftObject);
-        interaction.reply({ content: '✅ Shift broadcast sent!', flags: MessageFlags.Ephemeral });
+        interaction.reply({ content: '✅ Task broadcast sent!', flags: MessageFlags.Ephemeral });
     },
 };

@@ -58,10 +58,10 @@ client.on(Events.InteractionCreate, async interaction => {
 							.setColor('Green')
 							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
 							.setTitle(`${shift.title} Shift started!`)
-							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: Before **${moment(shift.deadline).format('MMMM Do YYYY, h:mm A')}**\n📑 Details: ${shift.details}`)
+							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 							.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
-				await interaction.reply({ content: `Shift **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
+				await interaction.reply({ content: `Task **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
 			}
 			else if (action === "declineShift") {
 				Shift.reject(id, interaction.user);
@@ -69,10 +69,10 @@ client.on(Events.InteractionCreate, async interaction => {
 							.setColor('Red')
 							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
 							.setTitle(`${shift.title} Shift rejected!`)
-							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: Before **${moment(shift.deadline).format('MMMM Do YYYY, h:mm A')}**\n📑 Details: ${shift.details}`)
+							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 							.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
-				await interaction.reply({ content: `Shift **${shift.title}}** has been rejected, please `, flags: MessageFlags.Ephemeral });
+				await interaction.reply({ content: `Task **${shift.title}}** has been rejected, the HR team will be notified, please log a reason for rejecting this task when asked.`, flags: MessageFlags.Ephemeral });
 			}
 		} catch (error) {
 			console.error(error);

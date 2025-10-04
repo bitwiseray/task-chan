@@ -26,7 +26,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor('#3498DB')
       .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
-      .setTitle(`${interaction.guild.name} — Ongoing Shifts`)
+      .setTitle(`${interaction.guild.name} — Ongoing Tasks`)
       .setDescription(formattedList.join("\n") || 'No active shifts')
       .setTimestamp()
     await interaction.reply({ embeds: [embed] });
