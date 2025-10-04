@@ -1,5 +1,5 @@
 const { InteractionContextType, ButtonBuilder, ButtonStyle, SlashCommandBuilder, EmbedBuilder, MessageFlags, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
-const { shiftBroadcastChannel, shiftAdminRole, devUser, onShiftRole, onBreakRole } = require('../../config.json');
+const { shiftBroadcastChannel } = require('../../config.json');
 const Shift = require('../../utility/shift-handle');
 const { nanoid } = require('nanoid');
 const moment = require('moment');
@@ -13,11 +13,6 @@ module.exports = {
 				.setName('title')
 				.setDescription('Title of the shift')
 				.setRequired(true))
-		.addUserOption(option =>
-			option
-				.setName('target')
-				.setDescription('Who is the shift for')
-				.setRequired(true))
 		.addStringOption(option =>
 			option
 				.setName('details')
@@ -27,6 +22,11 @@ module.exports = {
 			option
 				.setName('deadline')
 				.setDescription('Enter deadline date in DD/MM/YYYY HH:mm format, i.e 2/10/2025 12:00')
+				.setRequired(true))
+        .addUserOption(option =>
+			option
+				.setName('target')
+				.setDescription('Who is the shift for')
 				.setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.setContexts(InteractionContextType.Guild),
@@ -45,7 +45,7 @@ module.exports = {
         if (!deadline.isValid()) {
             return interaction.reply({ content: '❌ Invalid deadline format! Please enter date in **DD/MM/YYY HH:mm** format.', flags: MessageFlags.Ephemeral });
         }
-        const key = nanoid(10);
+        const key = nanoid(5);
         const shiftObject = {
             title: title,
             assignedId: target.id,
@@ -60,7 +60,7 @@ module.exports = {
             .setColor('Blue')
             .setAuthor({ name: target.displayName, iconURL: target.avatarURL() })
             .setTitle(`${shiftTitle} Shift!`)
-            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: <t:${deadline}:f>\n📑 Details: ${detail}`)
+            .setDescription(`👤 Assigned to: ${target}\n⏱️ Deadline: <t:${Math.floor(deadline.valueOf() / 1000)}:f>\n📑 Details: ${detail}`)
             .setTimestamp()
 
         const row = new ActionRowBuilder()

@@ -1,15 +1,11 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
-const { shiftBroadcastChannel, shiftAdminRole, devUser, onShiftRole, onBreakRole } = require('../../config.json');
 const Shift = require('../../utility/shift-handle');
-const moment = require('moment');
-
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('list-all')
     .setDescription('List ongoing shifts'),
   async execute(interaction) {
     const shiftList = await Shift.listAll();
-
     const statusEmojis = {
       STARTED: "✅",
       REJECTED: "❌",
@@ -33,7 +29,6 @@ module.exports = {
       .setTitle(`${interaction.guild.name} — Ongoing Shifts`)
       .setDescription(formattedList.join("\n") || 'No active shifts')
       .setTimestamp()
-
     await interaction.reply({ embeds: [embed] });
   },
 };
