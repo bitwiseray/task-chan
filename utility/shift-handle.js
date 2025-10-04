@@ -72,6 +72,16 @@ class Shift {
     }
   }
 
+  async getShiftByUser(userId) {
+    try {
+      const allShifts = await this.db.all();
+      const shift = allShifts.find(item => item.value.assignedId === userId && item.value.status === "STARTED");
+      return shift;
+    } catch (error) {
+      return { success: false, cause: error, data: null };
+    }
+  }
+
   /**
    * Prompt a shift to start
    * @param {String} key 
