@@ -38,7 +38,7 @@ module.exports = {
 
         const target = interaction.options.getUser('target');
         const title = interaction.options.getString('title');
-        const detail = interaction.options.getString('detail');
+        const detail = interaction.options.getString('details');
         const deadlineInput = interaction.options.getString('deadline');
         const shiftTitle = interaction.options.getString('title');
         const deadline = moment(deadlineInput, 'DD/MM/YYYY HH:mm');
