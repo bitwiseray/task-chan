@@ -76,7 +76,7 @@ class Shift {
     try {
       const allShifts = await this.db.all();
       const shiftEntry = allShifts.find(
-        (item) => item.value.assignedId === userId && item.value.status === "STARTED"
+        (item) => item.value.assignedId === userId && item.value.status !== "PENDING"
       );
       if (!shiftEntry) return null;
       return { id: shiftEntry.id, ...shiftEntry.value };
