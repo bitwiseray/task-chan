@@ -33,7 +33,7 @@ npm install
 3. Create a `.env` file with your bot token and optional config:
 
 ```env
-DISCORD_TOKEN=your-bot-token
+token=your-bot-token
 ```
 
 4. Run the bot:
