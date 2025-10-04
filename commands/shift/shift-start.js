@@ -1,4 +1,4 @@
-const { InteractionContextType, ButtonBuilder, ButtonStyle, SlashCommandBuilder, EmbedBuilder, MessageFlags, ActionRowBuilder } = require('discord.js');
+const { InteractionContextType, ButtonBuilder, ButtonStyle, SlashCommandBuilder, EmbedBuilder, MessageFlags, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
 const { shiftBroadcastChannel, shiftAdminRole, devUser, onShiftRole, onBreakRole } = require('../../config.json');
 const Shift = require('../../utility/shift-handle');
 const { nanoid } = require('nanoid');
@@ -28,12 +28,10 @@ module.exports = {
 				.setName('deadline')
 				.setDescription('Enter deadline date in DD/MM/YYYY HH:mm format, i.e 2/10/2025 12:00')
 				.setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.setContexts(InteractionContextType.Guild),
     async execute(interaction) {
         const broadcastChannel = interaction.guild.channels.cache.get(shiftBroadcastChannel);
-        if (!interaction.member.roles.cache.has(shiftAdminRole) && interaction.user.id !== devUser) {
-            return interaction.reply({ content: '⚠️ You do not have permission to use this command!', flags: MessageFlags.Ephemeral });
-        }
         if (!broadcastChannel) {
             return interaction.reply({ content: '❌ Shift broadcast channel not found!', flags: MessageFlags.Ephemeral });
         }
