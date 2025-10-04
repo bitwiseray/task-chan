@@ -7,6 +7,11 @@ module.exports = {
         .setDescription('Display your current shift details.'),
     async execute(interaction) {
         const shift = await Shift.getShiftByUser(interaction.user.id);
+        if (!shift) {
+            await interaction.reply({ content: 'You are not currently on a shift.', flags: MessageFlags.Ephemeral });
+            return;
+        }
+
         const key = shift.id;
         const statusEmojis = {
             STARTED: "✅",
@@ -19,22 +24,18 @@ module.exports = {
             PENDING: '#FAA61A'
         }
 
-        if (!shift) {
-            await interaction.reply({ content: 'You are not currently on a shift.', flags: MessageFlags.Ephemeral });
-            return;
-        }
-
         const embed = new EmbedBuilder()
             .setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
             .setColor(color[shift.status])
             .setTitle(`📋 Current Task: ${shift.title}`)
             .setDescription(`**${shift.details}**
-                
-                - **Status**: ${statusEmojis[shift.status] || '❔'} ${shift.status}
-                - **Assigned to**: <@${shift.assignedId}>
-                - **Started**: <t:${Math.floor(shift.startedAt / 1000)}:R>
-                - **Deadline**: <t:${Math.floor(shift.deadline / 1000)}:R>
-                - **Task ID**: ${shift.id}`)
+
+                • Status: ${statusEmojis[shift.status] || '❔'} ${shift.status}
+                • Assigned to: <@${shift.assignedId}>
+                • Started: ${shift.startedAt ? `<t:${Math.floor(shift.startedAt / 1000)}:R>` : 'Not started'}
+                • Deadline:<t:${Math.floor(shift.deadline / 1000)}:R>
+                • Task ID: ${shift.id}
+                `)                
             .setTimestamp()
             .setFooter({ text: interaction.guild.name });
         
