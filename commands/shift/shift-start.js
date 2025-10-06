@@ -65,6 +65,7 @@ module.exports = {
 
         const message = await broadcastChannel.send({ content: `New task notice for ${target}!`, embeds: [embed], components: [row] });
         const shiftObject = {
+            id: key,
             title: title,
             assignedId: target.id,
             broadcastMessageId: message.id,

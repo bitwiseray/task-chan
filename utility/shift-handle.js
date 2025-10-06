@@ -1,6 +1,7 @@
 const { QuickDB } = require("quick.db");
 const ShiftDb = new QuickDB();
 const { UserError, NotFoundError, PermissionError, InternalError } =  require('./HandleError');
+const moment = require('moment');
 
 class Shift {
   constructor() {
@@ -15,18 +16,19 @@ class Shift {
   async post(key, data) {
     try {
       const shift = {
+        id: data.id ?? key,
         title: data.title ?? "Untitled Shift",
         details: data.details ?? null,
         assignedId: data.assignedId ?? null,
         broadcastMessageId: data.broadcastMessageId ?? null,
         deadline: data.deadline ?? null,
         status: data.status ?? "PENDING",
-        createdAt: Date.now(),
-        startedAt: null
+        createdAt: data.createdAt ?? null,
+        startedAt: null,
+        completedAt: null
       };
 
       await this.db.set(key, shift);
-      return { success: true, cause: null };
     } catch (error) {
       throw new InternalError(error);
     }
@@ -94,11 +96,12 @@ class Shift {
   async start(key, user) {
     try {
       const shift = await this.get(key);
+      console.log(shift)
       if (!shift) throw new NotFoundError('Shift not found');
       if (shift.assignedId !== user.id) throw new PermissionError('You are not assigned to this shift');
-      if (shift.status !== "STARTED") throw new UserError('Shift has not started yet');
+      if (shift.status !== 'PENDING') throw new UserError('Shift has not been poseted yet');
       shift.status = "STARTED";
-      shift.startedAt = Date.now();
+      shift.startedAt = moment().valueOf();      ;
       await this.db.set(key, shift);
     } catch (error) {
       throw new InternalError(error);
@@ -129,17 +132,17 @@ class Shift {
    * @param {String} key 
    * @param {Object} user 
    */
-  async completed(key, user) {
+  async completed(user) {
     try {
-      const shift = await this.get(key);
+      const shift = await this.getShiftByUser(user.id);
       if (!shift) throw new NotFoundError("Shift not found");
-      if (shift.status !== "STARTED") throw new UserError("Shift has not started");
+      if (shift.status !== 'STARTED') throw new UserError("Shift has not started yet or already completed");
       if (shift.assignedId !== user.id) throw new PermissionError("You are not assigned to this shift");
       shift.status = "COMPLETED";
-      await this.db.set(key, shift);
-      return { success: true, cause: null };
+      shift.completedAt = moment().valueOf();
+      await this.db.set(shift.id, shift);
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw error;
     }
   }
 
