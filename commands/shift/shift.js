@@ -58,6 +58,6 @@ module.exports = {
                     .setStyle(ButtonStyle.Secondary)
             );
 
-        await interaction.reply({ embeds: [embed], components: [row] });
+        interaction.reply({ embeds: [embed], components: [row] });
     },
 };
