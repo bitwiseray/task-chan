@@ -20,7 +20,9 @@ class ShiftInteraction {
       .setTitle(`${shift.title} task on pause!`)
       .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
       .setTimestamp()
-		broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+		await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+    Shift.pause(this.shift.id, interaction.user);
+		await interaction.reply({ content: `Task **${shift.title}** has been paused!`, flags: MessageFlags.Ephemeral });
   }
 
   async end(interaction, shift, broadcastMessage) { 
@@ -31,6 +33,8 @@ class ShiftInteraction {
       .setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}\n✅ Completed at: <t:${Math.floor(Date.now() / 1000)}:f>`)
       .setTimestamp()
 		broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+    Shift.end(this.shift.id, interaction.user);
+		await interaction.reply({ content: `Task **${shift.title}** has been completed!`, flags: MessageFlags.Ephemeral });
   }
 
   async complete(interaction, shift, broadcastMessage) { 
