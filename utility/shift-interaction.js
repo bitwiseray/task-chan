@@ -2,7 +2,7 @@ const { QuickDB } = require("quick.db");
 const { shiftUpdatesChannel, shiftBroadcastChannel } = require('../config.json');
 const ShiftDb = new QuickDB();
 const Shift = require('./shift-handle');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, MessageFlags } = require('discord.js');
 
 
 class ShiftInteraction {
