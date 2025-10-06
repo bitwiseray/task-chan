@@ -10,7 +10,6 @@ class ShiftInteraction {
     this.interaction = interaction;
     this.shift = shift;
     this.broadcastMessage = broadcastMessage;
-    this.shiftUpdatesChannel = this.interaction.guild.channels.cache.get(shiftBroadcastChannel);
   }
 
   async pause() { 
@@ -58,7 +57,8 @@ class ShiftInteraction {
       .setTimestamp()
 		broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.reject(id, interaction.user);
-    if (!this.shiftUpdatesChannel) {
+    const channel = await this.interaction.guild.channels.cache.get(shiftBroadcastChannel)
+    if (channel) {
       return interaction.channel.send('❌ Task broadcast channel not found!');
     }
     let alert = await updatesChannel.send({ content: `${interaction.user} has rejected task **${shift.title}**, please reply to this message to log reason.` });
