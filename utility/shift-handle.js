@@ -1,5 +1,6 @@
 const { QuickDB } = require("quick.db");
 const ShiftDb = new QuickDB();
+const { UserError, NotFoundError, PermissionError, InternalError } =  require('./HandleError');
 
 class Shift {
   constructor() {
@@ -27,7 +28,7 @@ class Shift {
       await this.db.set(key, shift);
       return { success: true, cause: null };
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw new InternalError(error);
     }
   }
 
@@ -40,7 +41,7 @@ class Shift {
       await this.db.delete(key);
       return { success: true, cause: null };
     } catch (error) {
-      return { success: false, cause: error };
+      throw new InternalError(error);
     }
   }
 
@@ -56,7 +57,7 @@ class Shift {
       }));
       return clean;
     } catch (error) {
-      return { success: false, cause: error, data: [] };
+      throw new InternalError(error);
     }
   }
 
@@ -69,7 +70,7 @@ class Shift {
       const shift = await this.db.get(key);
       return shift;
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw new InternalError(error);
     }
   }
 
@@ -79,10 +80,10 @@ class Shift {
       const shiftEntry = allShifts.find(
         (item) => item.value.assignedId === userId && item.value.status !== "PENDING"
       );
-      if (!shiftEntry) return null;
+      if (!shiftEntry) throw new NotFoundError("Shift not found");
       return { id: shiftEntry.id, ...shiftEntry.value };
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw new InternalError(error);
     }
   }
 
@@ -94,15 +95,14 @@ class Shift {
   async start(key, user) {
     try {
       const shift = await this.get(key);
-      if (!shift) return { success: false, cause: "Shift not found", data: null };
-      if (shift.status !== "PENDING") return { success: false, cause: "Shift is not pending", data: null };
-      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      if (!shift) throw new NotFoundError('Shift not found');
+      if (shift.assignedId !== user.id) throw new PermissionError('You are not assigned to this shift');
+      if (shift.status !== "STARTED") throw new UserError('Shift has not started yet');
       shift.status = "STARTED";
       shift.startedAt = Date.now();
       await this.db.set(key, shift);
-      return { success: true, cause: null };
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw new InternalError(error);
     }
   }
 
@@ -114,14 +114,14 @@ class Shift {
   async reject(key, user) {
     try {
       const shift = await this.get(key);
-      if (!shift) return { success: false, cause: "Shift not found", data: null };
-      if (shift.status !== "PENDING") return { success: false, cause: "Cannot reject an active shift", data: null };
-      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      if (!shift) throw new NotFoundError("Shift not found");
+      if (shift.status !== "PENDING") throw new UserError("Cannot reject a shift not assinged to anyone");
+      if (shift.assignedId !== user.id) throw new PermissionError("You are not assigned to this shift");
       shift.status = "REJECTED";
       await this.db.set(key, shift);
       return { success: true, cause: null };
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw new InternalError(error);
     }
   }
 
@@ -133,9 +133,9 @@ class Shift {
   async completed(key, user) {
     try {
       const shift = await this.get(key);
-      if (!shift) return { success: false, cause: "Shift not found", data: null };
-      if (shift.status !== "STARTED") return { success: false, cause: "Shift is not started", data: null };
-      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      if (!shift) throw new NotFoundError("Shift not found");
+      if (shift.status !== "STARTED") throw new UserError("Shift has not started");
+      if (shift.assignedId !== user.id) throw new PermissionError("You are not assigned to this shift");
       shift.status = "COMPLETED";
       await this.db.set(key, shift);
       return { success: true, cause: null };
@@ -147,28 +147,26 @@ class Shift {
   async abandon(key, user) {
     try {
       const shift = await this.get(key);
-      if (!shift) return { success: false, cause: "Shift not found", data: null };
-      if (shift.status !== "STARTED") return { success: false, cause: "Shift is not started", data: null };
-      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      if (!shift) throw new NotFoundError("Shift not found");
+      if (shift.status !== "STARTED" || shift.status === "ABANDONED") throw new UserError('Shift has not started or already abandoned');
+      if (shift.assignedId !== user.id) throw new PermissionError("You are not assigned to this shift");
       shift.status = "ABANDONED";
       await this.db.set(key, shift);
-      return { success: true, cause: null };
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw error
     }
   }
 
-  async pause(key, user) {
+  async pause(user) {
     try {
-      const shift = await this.get(key);
-      if (!shift) return { success: false, cause: "Shift not found", data: null };
-      if (shift.status !== "STARTED") return { success: false, cause: "Shift is not started", data: null };
-      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      const shift = await this.getShiftByUser(user.id);
+      if (!shift) throw new NotFoundError("Shift not found");
+      if (shift.status !== "STARTED") throw new UserError('Shift can only be paused if it has started.');
+      if (shift.assignedId !== user.id) throw new PermissionError("You are not assigned to this shift");
       shift.status = "PAUSED";
-      await this.db.set(key, shift);
-      return { success: true, cause: null };
+      await this.db.set(shift.id, shift);
     } catch (error) {
-      return { success: false, cause: error, data: null };
+      throw error;
     }
   }
 }
