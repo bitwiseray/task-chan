@@ -19,7 +19,7 @@ class ShiftInteraction {
       .setTitle(`${this.shift.title} task on pause!`)
       .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}`)
       .setTimestamp()
-		await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+		await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.pause(this.shift.id, interaction.user);
 		await interaction.reply({ content: `Task **${shift.title}** has been paused!`, flags: MessageFlags.Ephemeral });
   }
@@ -31,7 +31,7 @@ class ShiftInteraction {
       .setTitle(`${shift.title} task completed!`)
       .setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}\n✅ Completed at: <t:${Math.floor(Date.now() / 1000)}:f>`)
       .setTimestamp()
-		broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+		await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.end(this.shift.id, interaction.user);
 		await interaction.reply({ content: `Task **${shift.title}** has been completed!`, flags: MessageFlags.Ephemeral });
   }
@@ -43,7 +43,7 @@ class ShiftInteraction {
       .setTitle(`${shift.title} task completed!`)
       .setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}\n✅ Completed at: <t:${Math.floor(Date.now() / 1000)}:R>`)
       .setTimestamp()
-		await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+		await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.completed(id, interaction.user);
 		await interaction.reply({ content: `Task **${shift.title}** has been completed!`, flags: MessageFlags.Ephemeral });
   }
@@ -55,7 +55,7 @@ class ShiftInteraction {
       .setTitle(`${shift.title} task rejected!`)
       .setDescription(`👤 Assigned to: ${user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
       .setTimestamp()
-		broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+		await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.reject(id, interaction.user);
     const channel = await this.interaction.guild.channels.cache.get(shiftBroadcastChannel)
     if (channel) {
@@ -72,7 +72,7 @@ class ShiftInteraction {
       .setTitle(`${shift.title} task started!`)
       .setDescription(`👤 Assigned to: ${user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n🏁 Started: <t:${Math.floor(shift.startedAt / 1000)}:R>\n📑 Details: ${shift.details}`)
       .setTimestamp()
-		broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+		await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.start(this.shift.id, this.interaction.member);
 		await interaction.reply({ content: `Task **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
   }
