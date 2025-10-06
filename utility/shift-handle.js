@@ -39,7 +39,6 @@ class Shift {
   async delete(key) {
     try {
       await this.db.delete(key);
-      return { success: true, cause: null };
     } catch (error) {
       throw new InternalError(error);
     }
