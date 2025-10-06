@@ -42,20 +42,8 @@ module.exports = {
         const deadlineInput = interaction.options.getString('deadline');
         const shiftTitle = interaction.options.getString('title');
         const deadline = moment(deadlineInput, 'DD/MM/YYYY HH:mm');
-        if (!deadline.isValid()) {
-            return interaction.reply({ content: '❌ Invalid deadline format! Please enter date in **DD/MM/YYY HH:mm** format.', flags: MessageFlags.Ephemeral });
-        }
+        if (!deadline.isValid()) return interaction.reply({ content: '❌ Invalid deadline format! Please enter date in **DD/MM/YYY HH:mm** format.', flags: MessageFlags.Ephemeral });
         const key = nanoid(5);
-        const shiftObject = {
-            title: title,
-            assignedId: target.id,
-            details: detail,
-            deadline: deadline.valueOf(),
-            status: 'PENDING',
-            createdAt: moment().valueOf(),
-            startedAt: null
-        }
-
         const embed = new EmbedBuilder()
             .setColor('Blue')
             .setAuthor({ name: target.displayName, iconURL: target.avatarURL() })
@@ -75,7 +63,17 @@ module.exports = {
                     .setStyle(ButtonStyle.Danger)
             );
 
-        await broadcastChannel.send({ content: `New task notice for ${target}!`, embeds: [embed], components: [row] });
+        const message = await broadcastChannel.send({ content: `New task notice for ${target}!`, embeds: [embed], components: [row] });
+        const shiftObject = {
+            title: title,
+            assignedId: target.id,
+            broadcastMessageId: message.id,
+            details: detail,
+            deadline: deadline.valueOf(),
+            status: 'PENDING',
+            createdAt: moment().valueOf(),
+            startedAt: null
+        }
         await Shift.post(key, shiftObject);
         interaction.reply({ content: '✅ Task broadcast sent!', flags: MessageFlags.Ephemeral });
     },
