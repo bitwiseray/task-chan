@@ -10,8 +10,9 @@ module.exports = {
       STARTED: '🏁',
       REJECTED: '❌',
       PENDING: '🟡',
-      PAUSED: '🍹'
-    };
+      PAUSED: '🍹',
+      COMPLETED: '✅'
+  };
 
     const formattedList = shiftList.map((task, index) => {
       const statusEmoji = statusEmojis[task.status] || "❔"; 
