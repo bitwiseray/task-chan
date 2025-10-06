@@ -21,7 +21,7 @@
 
 ```bash
 git clone https://github.com/yourusername/task-chan.git
-cd shift-management-bot
+cd task-chan
 ```
 
 2. Install dependencies:
