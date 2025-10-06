@@ -96,12 +96,11 @@ class Shift {
   async start(key, user) {
     try {
       const shift = await this.get(key);
-      console.log(shift)
       if (!shift) throw new NotFoundError('Shift not found');
       if (shift.assignedId !== user.id) throw new PermissionError('You are not assigned to this shift');
       if (shift.status !== 'PENDING') throw new UserError('Shift has not been poseted yet');
       shift.status = "STARTED";
-      shift.startedAt = moment().valueOf();      ;
+      shift.startedAt = moment().valueOf();
       await this.db.set(key, shift);
     } catch (error) {
       throw new InternalError(error);
