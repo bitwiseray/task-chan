@@ -20,7 +20,7 @@
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/shift-management-bot.git
+git clone https://github.com/yourusername/task-chan.git
 cd shift-management-bot
 ```
 
