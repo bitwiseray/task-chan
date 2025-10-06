@@ -16,8 +16,8 @@ class ShiftInteraction {
     const embed = new EmbedBuilder()
       .setColor('Yellow')
       .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
-      .setTitle(`${shift.title} task on pause!`)
-      .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
+      .setTitle(`${this.shift.title} task on pause!`)
+      .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}`)
       .setTimestamp()
 		await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
     Shift.pause(this.shift.id, interaction.user);
