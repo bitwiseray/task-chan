@@ -50,7 +50,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	else if (interaction.isButton()) {
 		try {
 			const [action, id] = interaction.customId.split(":");
-			const shift = await Shift.get(id);
+			if (!id) return;
 			const broadcastMessage = await interaction.guild.channels.cache
 			.get(shiftBroadcastChannel)
 			.messages.fetch(shift.broadcastMessageId);
@@ -59,8 +59,6 @@ client.on(Events.InteractionCreate, async interaction => {
 			switch (action) {
 			case "acceptShift": await handler.accept(); break;
 			case "declineShift": await handler.reject(); break;
-			case "completeShift": await handler.complete(); break;
-			case "pauseShift": await handler.pause(); break;
 			}
 		} catch (error) {
 			console.error(error);
