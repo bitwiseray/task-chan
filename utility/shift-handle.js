@@ -84,7 +84,7 @@ class Shift {
     } catch (error) {
       return { success: false, cause: error, data: null };
     }
-  }  
+  }
 
   /**
    * Prompt a shift to start
@@ -93,7 +93,7 @@ class Shift {
    */
   async start(key, user) {
     try {
-      const shift = await this.db.get(key);
+      const shift = await this.get(key);
       if (!shift) return { success: false, cause: "Shift not found", data: null };
       if (shift.status !== "PENDING") return { success: false, cause: "Shift is not pending", data: null };
       if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
@@ -113,7 +113,7 @@ class Shift {
    */
   async reject(key, user) {
     try {
-      const shift = await this.db.get(key);
+      const shift = await this.get(key);
       if (!shift) return { success: false, cause: "Shift not found", data: null };
       if (shift.status !== "PENDING") return { success: false, cause: "Cannot reject an active shift", data: null };
       if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
@@ -132,11 +132,39 @@ class Shift {
    */
   async completed(key, user) {
     try {
-      const shift = await this.db.get(key);
+      const shift = await this.get(key);
       if (!shift) return { success: false, cause: "Shift not found", data: null };
       if (shift.status !== "STARTED") return { success: false, cause: "Shift is not started", data: null };
       if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
       shift.status = "COMPLETED";
+      await this.db.set(key, shift);
+      return { success: true, cause: null };
+    } catch (error) {
+      return { success: false, cause: error, data: null };
+    }
+  }
+
+  async abandon(key, user) {
+    try {
+      const shift = await this.get(key);
+      if (!shift) return { success: false, cause: "Shift not found", data: null };
+      if (shift.status !== "STARTED") return { success: false, cause: "Shift is not started", data: null };
+      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      shift.status = "ABANDONED";
+      await this.db.set(key, shift);
+      return { success: true, cause: null };
+    } catch (error) {
+      return { success: false, cause: error, data: null };
+    }
+  }
+
+  async pause(key, user) {
+    try {
+      const shift = await this.get(key);
+      if (!shift) return { success: false, cause: "Shift not found", data: null };
+      if (shift.status !== "STARTED") return { success: false, cause: "Shift is not started", data: null };
+      if (shift.assignedId !== user.id) return { success: false, cause: "You are not assigned to this shift", data: null };
+      shift.status = "PAUSED";
       await this.db.set(key, shift);
       return { success: true, cause: null };
     } catch (error) {
