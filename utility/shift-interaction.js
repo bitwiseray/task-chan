@@ -78,4 +78,4 @@ class ShiftInteraction {
   }
 }
 
-module.exports = new ShiftInteraction();
+module.exports = ShiftInteraction;
