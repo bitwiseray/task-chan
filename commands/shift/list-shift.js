@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js'
 const Shift = require('../../utility/shift-handle');
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('list-all')
+    .setName('list')
     .setDescription('List ongoing shifts'),
   async execute(interaction) {
     const shiftList = await Shift.listAll();

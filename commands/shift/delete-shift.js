@@ -6,7 +6,7 @@ const moment = require('moment');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('delete-shift')
+        .setName('delete')
         .setDescription('Delete an active shift')
         .addStringOption(option =>
             option

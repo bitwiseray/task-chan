@@ -6,7 +6,7 @@ const moment = require('moment');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('shift-broadcast')
+		.setName('broadcast')
 		.setDescription('Broadcast shift for the day')
         .addStringOption(option =>
 			option
