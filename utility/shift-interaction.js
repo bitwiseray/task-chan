@@ -22,23 +22,25 @@ class ShiftInteraction {
     }
   }
 
-  async pause() {
-    try {
-      const embed = new EmbedBuilder()
-        .setColor('Yellow')
-        .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
-        .setTitle(`${this.shift.title} task on pause!`)
-        .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}`)
-        .setTimestamp()
-      await Shift.pause(this.interaction.user)
-      await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
-      await this.interaction.reply({ content: `Task **${this.shift.title}** has been paused!`, flags: MessageFlags.Ephemeral });
-    } catch (error) {
-      await this.handleError(error);
-    }
-  }
+  // async pause() {
+  //   try {
+  //     const embed = new EmbedBuilder()
+  //       .setColor('Yellow')
+  //       .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
+  //       .setTitle(`${this.shift.title} task on pause!`)
+  //       .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}`)
+  //       .setTimestamp()
+      
+       
+  //     await Shift.pause(this.interaction.user)
+  //     await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+  //     await this.interaction.editReply()
+  //   } catch (error) {
+  //     await this.handleError(error);
+  //   }
+  // }
 
-  async end() {
+  async abandon() {
     try {
       const embed = new EmbedBuilder()
         .setColor('Aqua')
@@ -73,6 +75,7 @@ class ShiftInteraction {
 
   async reject() {
     try {
+      await Shift.reject(this.shift.id, this.interaction.user);
       const embed = new EmbedBuilder()
         .setColor('Red')
         .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
@@ -80,7 +83,6 @@ class ShiftInteraction {
         .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}`)
         .setTimestamp()
 
-      await Shift.reject(this.shift.id, this.interaction.user);
       await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
       const channel = await this.interaction.guild.channels.cache.get(shiftBroadcastChannel)
       if (!channel) {
@@ -102,7 +104,7 @@ class ShiftInteraction {
         .setColor('Green')
         .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
         .setTitle(`${this.shift.title} task started!`)
-        .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n🏁 Started: <t:${Math.floor(this.shift.startedAt / 1000)}:R>\n📑 Details: ${this.shift.details}`)
+        .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n🏁 Started: <t:${Math.floor(Date.now() / 1000)}:R>\n📑 Details: ${this.shift.details}`)
         .setTimestamp()
 
       await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
