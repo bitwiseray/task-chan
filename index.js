@@ -30,7 +30,6 @@ for (const folder of commandFolders) {
 }
 
 client.on(Events.InteractionCreate, async interaction => {
-	// Slash commands
 	if (interaction.isChatInputCommand()) {
 		const command = interaction.client.commands.get(interaction.commandName);
 		if (!command) {
@@ -55,22 +54,22 @@ client.on(Events.InteractionCreate, async interaction => {
 			if (action === "acceptShift") {
 				Shift.start(id, interaction.member);
 				const embed = new EmbedBuilder()
-							.setColor('Green')
-							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
-							.setTitle(`${shift.title} task started!`)
-							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
-							.setTimestamp()
+					.setColor('Green')
+					.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
+					.setTitle(`${shift.title} task started!`)
+					.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
+					.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
 				await interaction.reply({ content: `Task **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
 			}
 			else if (action === "declineShift") {
 				Shift.reject(id, interaction.user);
 				const embed = new EmbedBuilder()
-							.setColor('Red')
-							.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
-							.setTitle(`${shift.title} task rejected!`)
-							.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
-							.setTimestamp()
+					.setColor('Red')
+					.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
+					.setTitle(`${shift.title} task rejected!`)
+					.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
+					.setTimestamp()
 				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
 				const updatesChannel = interaction.guild.channels.cache.get(shiftUpdatesChannel);
 				if (!updatesChannel) {
@@ -85,6 +84,5 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
-
 
 client.login(process.env.token);
