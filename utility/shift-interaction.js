@@ -3,6 +3,7 @@ const { shiftUpdatesChannel, shiftBroadcastChannel } = require('../config.json')
 const ShiftDb = new QuickDB();
 const Shift = require('./shift-handle');
 const { EmbedBuilder, MessageFlags } = require('discord.js');
+const { UserError, NotFoundError, PermissionError, InternalError } =  require('./HandleError');
 
 
 class ShiftInteraction {
@@ -13,15 +14,24 @@ class ShiftInteraction {
   }
 
   async pause() { 
-    const embed = new EmbedBuilder()
+    try {
+      const embed = new EmbedBuilder()
       .setColor('Yellow')
       .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
       .setTitle(`${this.shift.title} task on pause!`)
       .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}`)
       .setTimestamp()
-		await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
-    Shift.pause(this.shift.id, this.interaction.user);
-		await this.interaction.reply({ content: `Task **${this.shift.title}** has been paused!`, flags: MessageFlags.Ephemeral });
+      await Shift.pause(this.interaction.user)
+      await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
+      await this.interaction.reply({ content: `Task **${this.shift.title}** has been paused!`, flags: MessageFlags.Ephemeral });
+    } catch (error) {
+      if (error instanceof UserError || error instanceof NotFoundError || error instanceof PermissionError) {
+        await this.interaction.reply({ content: `❌ ${error.message}`, flags: MessageFlags.Ephemeral });
+      } else {
+        console.error(error);
+        await this.interaction.reply({ content: `⚠️ Something went wrong. Please try again later.`, flags: MessageFlags.Ephemeral });
+      }
+    }
   }
 
   async end() { 
