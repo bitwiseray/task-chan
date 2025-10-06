@@ -7,9 +7,10 @@ module.exports = {
   async execute(interaction) {
     const shiftList = await Shift.listAll();
     const statusEmojis = {
-      STARTED: "✅",
-      REJECTED: "❌",
-      PENDING: "🟡"
+      STARTED: '🏁',
+      REJECTED: '❌',
+      PENDING: '🟡',
+      PAUSED: '🍹'
     };
 
     const formattedList = shiftList.map((task, index) => {
