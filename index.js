@@ -53,24 +53,10 @@ client.on(Events.InteractionCreate, async interaction => {
 			const broadcastMessage = await interaction.guild.channels.cache.get(shiftBroadcastChannel).messages.fetch(shift.broadcastMessageId);
 			if (action === "acceptShift") {
 				Shift.start(id, interaction.member);
-				const embed = new EmbedBuilder()
-					.setColor('Green')
-					.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
-					.setTitle(`${shift.title} task started!`)
-					.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
-					.setTimestamp()
-				await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
 				await interaction.reply({ content: `Task **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
 			}
 			else if (action === "declineShift") {
 				Shift.reject(id, interaction.user);
-				const embed = new EmbedBuilder()
-					.setColor('Red')
-					.setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
-					.setTitle(`${shift.title} task rejected!`)
-					.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
-					.setTimestamp()
-				await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
 				const updatesChannel = interaction.guild.channels.cache.get(shiftUpdatesChannel);
 				if (!updatesChannel) {
 					return interaction.channel.send('❌ Task broadcast channel not found!');
