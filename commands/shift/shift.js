@@ -17,13 +17,15 @@ module.exports = {
             STARTED: '🏁',
             REJECTED: '❌',
             PENDING: '🟡',
-            PAUSED: '🍹'
+            PAUSED: '🍹',
+            COMPLETED: '✅'
         };
         const color = {
             STARTED: '#43B581',
             REJECTED: '#F04747',
             PENDING: '#FAA61A',
-            PAUSED: '#FFA559'
+            PAUSED: '#FFA559',
+            COMPLETED: '#43B581'
         }
         
         const embed = new EmbedBuilder()
