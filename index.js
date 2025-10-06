@@ -4,7 +4,7 @@ const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, MessageFlag
 require('dotenv').config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent] });
 const Shift = require('./utility/shift-handle');
-const { shiftUpdatesChannel } = require('./config.json');
+const { shiftUpdatesChannel, shiftBroadcastChannel } = require('./config.json');
 
 client.commands = new Collection();
 
@@ -36,7 +36,6 @@ client.on(Events.InteractionCreate, async interaction => {
 			console.error(`No command matching ${interaction.commandName} was found.`);
 			return;
 		}
-
 		try {
 			await command.execute(interaction);
 		} catch (error) {
@@ -51,6 +50,7 @@ client.on(Events.InteractionCreate, async interaction => {
 		try {
 			const [action, id] = interaction.customId.split(":");
 			const shift = await Shift.get(id);
+			const broadcastMessage = await interaction.guild.channels.cache.get(shiftBroadcastChannel).messages.fetch(shift.broadcastMessageId);
 			if (action === "acceptShift") {
 				Shift.start(id, interaction.member);
 				const embed = new EmbedBuilder()
@@ -59,7 +59,7 @@ client.on(Events.InteractionCreate, async interaction => {
 					.setTitle(`${shift.title} task started!`)
 					.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 					.setTimestamp()
-				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
+				await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
 				await interaction.reply({ content: `Task **${shift.title}** started!`, flags: MessageFlags.Ephemeral });
 			}
 			else if (action === "declineShift") {
@@ -70,15 +70,20 @@ client.on(Events.InteractionCreate, async interaction => {
 					.setTitle(`${shift.title} task rejected!`)
 					.setDescription(`👤 Assigned to: ${interaction.user}\n⏱️ Deadline: <t:${Math.floor(shift.deadline / 1000)}:f>\n📑 Details: ${shift.details}`)
 					.setTimestamp()
-				await interaction.message.edit({ content: '', embeds: [embed], components: [] });
+				await broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
 				const updatesChannel = interaction.guild.channels.cache.get(shiftUpdatesChannel);
 				if (!updatesChannel) {
 					return interaction.channel.send('❌ Task broadcast channel not found!');
 				}
-				// meow baby
 				let alert = await updatesChannel.send({ content: `${interaction.user} has rejected task **${shift.title}**, please reply to this message to log reason.` });
 				await interaction.reply({ content: `Task **${shift.title}** has been rejected, please log a reason for rejecting this task at ${alert.url}`, flags: MessageFlags.Ephemeral });
+			} else if(action === "completeShift") {
+				Shift.completed(id, interaction.user);
+				await interaction.reply({ content: `Task **${shift.title}** has been completed!`, flags: MessageFlags.Ephemeral });
+			} else if(action === "pauseShift") {
+				Shift.pause(id)
 			}
+
 		} catch (error) {
 			console.error(error);
 			await interaction.reply({ content: "Button error!", flags: MessageFlags.Ephemeral });
