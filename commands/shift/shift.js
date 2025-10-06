@@ -14,16 +14,18 @@ module.exports = {
 
         const key = shift.id;
         const statusEmojis = {
-            STARTED: "✅",
-            REJECTED: "❌",
-            PENDING: "🟡"
+            STARTED: '🏁',
+            REJECTED: '❌',
+            PENDING: '🟡',
+            PAUSED: '🍹'
         };
         const color = {
             STARTED: '#43B581',
             REJECTED: '#F04747',
-            PENDING: '#FAA61A'
+            PENDING: '#FAA61A',
+            PAUSED: '#FFA559'
         }
-
+        
         const embed = new EmbedBuilder()
             .setAuthor({ name: interaction.user.displayName, iconURL: interaction.user.avatarURL() })
             .setColor(color[shift.status])
