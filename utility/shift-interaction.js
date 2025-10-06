@@ -63,7 +63,7 @@ class ShiftInteraction {
         .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n📑 Details: ${this.shift.details}\n✅ Completed at: <t:${Math.floor(Date.now() / 1000)}:R>`)
         .setTimestamp()
 
-      await Shift.completed(this.shift.id, this.interaction.user);
+      await Shift.completed(this.interaction.user);
       await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
       await this.interaction.reply({ content: `Task **${this.shift.title}** has been completed!`, flags: MessageFlags.Ephemeral });
     } catch (error) {
@@ -97,13 +97,15 @@ class ShiftInteraction {
 
   async accept() {
     try {
+      console.log(this.shift)
       const embed = new EmbedBuilder()
         .setColor('Green')
         .setAuthor({ name: this.interaction.user.displayName, iconURL: this.interaction.user.avatarURL() })
         .setTitle(`${this.shift.title} task started!`)
         .setDescription(`👤 Assigned to: ${this.interaction.user}\n⏱️ Deadline: <t:${Math.floor(this.shift.deadline / 1000)}:f>\n🏁 Started: <t:${Math.floor(this.shift.startedAt / 1000)}:R>\n📑 Details: ${this.shift.details}`)
         .setTimestamp()
-        
+
+
       await Shift.start(this.shift.id, this.interaction.member);
 
       await this.broadcastMessage.edit({ content: '', embeds: [embed], components: [] });
