@@ -54,7 +54,6 @@ client.on(Events.InteractionCreate, async interaction => {
 			const broadcastMessage = await interaction.guild.channels.cache
 			.get(shiftBroadcastChannel)
 			.messages.fetch(shift.broadcastMessageId);
-
 			const handler = new ShiftInteraction(interaction, shift, broadcastMessage);
 
 			switch (action) {
