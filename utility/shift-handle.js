@@ -17,6 +17,7 @@ class Shift {
         title: data.title ?? "Untitled Shift",
         details: data.details ?? null,
         assignedId: data.assignedId ?? null,
+        broadcastMessageId: data.broadcastMessageId ?? null,
         deadline: data.deadline ?? null,
         status: data.status ?? "PENDING",
         createdAt: Date.now(),
