@@ -75,6 +75,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				if (!updatesChannel) {
 					return interaction.channel.send('❌ Task broadcast channel not found!');
 				}
+				// meow baby
 				let alert = await updatesChannel.send({ content: `${interaction.user} has rejected task **${shift.title}**, please reply to this message to log reason.` });
 				await interaction.reply({ content: `Task **${shift.title}** has been rejected, please log a reason for rejecting this task at ${alert.url}`, flags: MessageFlags.Ephemeral });
 			}
